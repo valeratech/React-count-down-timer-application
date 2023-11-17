@@ -3,7 +3,7 @@ import {useState, useRef} from 'react';
 export default function Player() {
     const playerNameInput = useRef();
 
-    const [playerName, setPlayerName] = useState('');
+    const [playerName, setPlayerName] = useState(null);
     // const [submitted, setSubmitted] = useState(false);
 
     // function changeNameHandler(e) {
