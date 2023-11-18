@@ -20,7 +20,7 @@ function TimerChallenge({title, targetTime}) {
         timerId.current = setTimeout(() => {
             setTimerStart(false);
             setTimerExpired(true);
-            dialog.current.showModal()
+            dialog.current.open();
         }, targetTime * 1000);
     }
 

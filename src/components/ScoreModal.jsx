@@ -1,10 +1,21 @@
-import {forwardRef} from "react";
+import {forwardRef, useImperativeHandle, useRef} from "react";
 
 // forwardRef is a helper function from React that allows us to wrap/forward a component's ref to another one.
 const ScoreModal = forwardRef(function ScoreModal({targetTime, result}, ref) {
+    const dialog = useRef();
+
+    // Create a custom interface between a child (ScoreModal.jsx) and its parent component (TimerChallenge.jsx).
+    useImperativeHandle(ref, () => {
+        return {
+            open() {
+                dialog.current.showModal();
+            }
+        }
+    })
+
     return (
         // Instead of forwarding a ref to a DOM node, you can forward it to your own component
-        <dialog ref={ref} className="result-modal">
+        <dialog ref={dialog} className="result-modal">
             <h2>You {result}</h2>
             <p>The target time was <strong>{targetTime} seconds.</strong></p>
             <p>You stopped the timer with <strong>X seconds left.</strong></p>
