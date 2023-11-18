@@ -1,15 +1,22 @@
 import {useState, useRef} from 'react';
 
 function TimerChallenge({title, targetTime}) {
+    const timerId = useRef();
     const [timerExpired, setTimerExpired] = useState(false);
     const [timerStart, setTimerStart] = useState(false);
 
+    function stopChallengeHandler(id) {
+        setTimerStart(false);
+        clearTimeout(timerId.current);
+    }
+
     // Multiply by 1000 to calculate in milliseconds
     function startChallengeHandler() {
+        setTimerExpired(false);
         setTimerStart(true);
-        setTimeout(() => {
-            setTimerExpired(true);
+        timerId.current = setTimeout(() => {
             setTimerStart(false);
+            setTimerExpired(true);
         }, targetTime * 1000);
     }
 
@@ -24,8 +31,8 @@ function TimerChallenge({title, targetTime}) {
                 {targetTime} second{targetTime > 1 ? 's' : ''}
             </p>
             <p>
-                <button onClick={startChallengeHandler}>
-                    Start Challenge
+                <button onClick={!timerStart ? startChallengeHandler : stopChallengeHandler}>
+                    {`${!timerStart ? 'Start' : 'Stop'} Challenge`}
                 </button>
             </p>
             <p className="">
