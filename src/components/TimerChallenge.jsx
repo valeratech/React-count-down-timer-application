@@ -5,28 +5,47 @@ function TimerChallenge({title, targetTime}) {
     const timerId = useRef();
     const dialog = useRef();
 
-    const [timerExpired, setTimerExpired] = useState(false);
-    const [timerStart, setTimerStart] = useState(false);
+    // const [timerExpired, setTimerExpired] = useState(false);
+    // const [timerStart, setTimerStart] = useState(false);
+
+    const [timeRemaining, setTimeRemaining] = useState(targetTime * 1000);
+
+    const timerIsActive = timeRemaining > 0 && timeRemaining < targetTime * 1000;
+
+    if (timeRemaining <= 0) {
+        // clearTimeout(timer.current);
+        clearInterval(timerId.current);
+        setTimeRemaining(targetTime * 1000);
+        dialog.current.open();
+    }
 
     function stopChallengeHandler(id) {
-        setTimerStart(false);
-        clearTimeout(timerId.current);
+        // setTimerStart(false);
+        dialog.current.open();
+        clearInterval(timerId.current);
+        setTimeRemaining(targetTime * 1000);
     }
 
     // Multiply by 1000 to calculate in milliseconds
     function startChallengeHandler() {
-        setTimerExpired(false);
-        setTimerStart(true);
-        timerId.current = setTimeout(() => {
-            setTimerStart(false);
-            setTimerExpired(true);
-            dialog.current.open();
-        }, targetTime * 1000);
+        // setTimerExpired(false);
+        // setTimerStart(true);
+        // timerId.current = setTimeout(() => {
+        timerId.current = setInterval(() => {
+            setTimeRemaining(prev => prev - 10);
+            // setTimerStart(false);
+            // setTimerExpired(true);
+            // dialog.current.open();
+        // The timeout argument controls the speed of the timer (*10 = milliseconds);
+        }, 10);
+        // }, targetTime * 1000);
     }
+
+    console.log(timeRemaining)
 
     // Replace with modal
     // const gameStatusMessage = timerExpired && <p>You Lost!</p>
-    const startTimeMessage = timerStart ? <p>Time is running ...</p> : <p>Timer inactive</p>
+    const startTimeMessage = timerIsActive ? <p>Time is running ...</p> : <p>Timer inactive</p>
 
     return (
         <>
@@ -41,8 +60,8 @@ function TimerChallenge({title, targetTime}) {
                     {targetTime} second{targetTime > 1 ? 's' : ''}
                 </p>
                 <p>
-                    <button onClick={!timerStart ? startChallengeHandler : stopChallengeHandler}>
-                        {`${!timerStart ? 'Start' : 'Stop'} Challenge`}
+                    <button onClick={!timerIsActive ? startChallengeHandler : stopChallengeHandler}>
+                        {`${!timerIsActive ? 'Start' : 'Stop'} Challenge`}
                     </button>
                 </p>
                 {startTimeMessage}
