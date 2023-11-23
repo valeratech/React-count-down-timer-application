@@ -1,7 +1,7 @@
 import {useState, useRef} from 'react';
 import ScoreModal from "./ScoreModal.jsx";
 
-function TimerChallenge({title, targetTime}) {
+function TimerChallenge({title, targetTime, onReset}) {
     const timerId = useRef();
     const dialog = useRef();
 
@@ -15,14 +15,20 @@ function TimerChallenge({title, targetTime}) {
     if (timeRemaining <= 0) {
         // clearTimeout(timer.current);
         clearInterval(timerId.current);
-        setTimeRemaining(targetTime * 1000);
         dialog.current.open();
+    }
+
+    function resetHandler() {
+        setTimeRemaining(targetTime * 1000);
     }
 
     function stopChallengeHandler(id) {
         // setTimerStart(false);
         dialog.current.open();
         clearInterval(timerId.current);
+    }
+
+    function handleReset() {
         setTimeRemaining(targetTime * 1000);
     }
 
@@ -52,7 +58,7 @@ function TimerChallenge({title, targetTime}) {
             {/*Instead of forwarding a ref to a DOM node, you can forward it to your own component*/}
             {/*{timerExpired && <ScoreModal ref={dialog} targetTime={targetTime} result="lost" />}*/}
             {/*TimeExpired Boolean no longer required*/}
-            <ScoreModal ref={dialog} targetTime={targetTime} result="lost" />
+            <ScoreModal ref={dialog} targetTime={targetTime} timeRemaining={timeRemaining} onReset={handleReset} />
             <section className="challenge">
                 <h2>{title}</h2>
                 {/*{gameStatusMessage}*/}
